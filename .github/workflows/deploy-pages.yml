@@ -1,0 +1,104 @@
+name: Deploy GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+      - english_toeic
+      - korean_topik
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: deploy-pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Build, validate, and deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout main branch
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: site-main
+          fetch-depth: 1
+
+      - name: Checkout English TOEIC branch
+        uses: actions/checkout@v4
+        with:
+          ref: english_toeic
+          path: site-english
+          fetch-depth: 1
+
+      - name: Checkout Korean TOPIK branch
+        uses: actions/checkout@v4
+        with:
+          ref: korean_topik
+          path: site-korean
+          fetch-depth: 1
+
+      - name: Show checked-out branch information
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          for item in "site-main:main" "site-english:english_toeic" "site-korean:korean_topik"; do
+            directory="${item%%:*}"
+            expected_branch="${item##*:}"
+
+            echo "============================================================"
+            echo "Directory: ${directory}"
+            echo "Expected branch: ${expected_branch}"
+            echo "Commit: $(git -C "${directory}" rev-parse HEAD)"
+            echo "Commit message: $(git -C "${directory}" log -1 --pretty=%s)"
+            echo "Files:"
+            find "${directory}" -maxdepth 3 -type f \
+              -not -path '*/.git/*' \
+              | sort \
+              | sed -n '1,160p'
+          done
+
+      - name: Prepare publish folder
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          rm -rf publish
+          mkdir -p publish/english_toeic
+          mkdir -p publish/korean_topik
+
+          rsync -av --delete \
+            --exclude='.git' \
+            --exclude='.github' \
+            site-main/ publish/
+
+          rsync -av --delete \
+            --exclude='.git' \
+            --exclude='.github' \
+            site-english/ publish/english_toeic/
+
+          rsync -av --delete \
+            --exclude='.git' \
+            --exclude='.github' \
+            site-korean/ publish/korean_topik/
+
+          touch publish/.nojekyll
+
+          echo "Published file tree:"
+          find publish -maxdepth 5 -type f | sort | sed -n '1,260p'
+
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./publish
+          publish_branch: gh-pages
+          force_orphan: true
+          enable_jekyll: false
+          commit_message: "deploy: ${{ github.sha }}"
