@@ -328,5 +328,5 @@ if (document.readyState === 'loading') {
         once: true
     });
 } else {
-    init().catch(error => window.quizLoader.fail(error));
+    init();
 }
