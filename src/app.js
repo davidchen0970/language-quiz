@@ -24,26 +24,14 @@ const passageTitle = q => q.passageTitle || q.articleTitle || '';
 const fileLabel = file => file.replace(/\.js$/i, '').replace(/[-_]+/g, ' ');
 const storageKey = 'genericQuizState';
 
-const SPEECH =
-    'speechSynthesis' in window &&
-    'SpeechSynthesisUtterance' in window;
-
-function speechLang(text) {
-    if (/[\u3040-\u30ff]/.test(text)) return 'ja-JP';
-    if (/[\uac00-\ud7af]/.test(text)) return 'ko-KR';
-    if (/[\u3400-\u4dbf\u4e00-\u9fff]/.test(text)) return 'zh-TW';
-    return 'en-US';
-}
+const SPEECH = 'speechSynthesis' in window && 'SpeechSynthesisUtterance' in window;
+const speechLang = text => /[\u3400-\u9fff]/.test(text) ? 'zh-TW' : 'en-US';
 
 function speak(text, lang) {
     if (!SPEECH || !text) return;
     window.speechSynthesis.cancel();
-    const finalLang = lang || speechLang(text);
-    const langCode = (finalLang || 'en').slice(0, 2).toLowerCase();
-    const blankWord = { en: 'blank', ko: '빈칸', zh: '空格', ja: '空欄' }[langCode] || 'blank';
-    const spokenText = text.replace(/_+/g, blankWord);
-    const u = new SpeechSynthesisUtterance(spokenText);
-    u.lang = finalLang;
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = lang || speechLang(text);
     u.rate = 0.95;
 
     function preferVoice() {
@@ -274,7 +262,7 @@ function render() {
             speakOpt.setAttribute('aria-label', `朗讀選項 ${l.textContent}`);
             speakOpt.onclick = e => {
                 e.stopPropagation();
-                speak(text, speechLang(text));
+                speak(text, 'en-US');
             };
             row.appendChild(speakOpt);
         }
@@ -397,5 +385,5 @@ if (document.readyState === 'loading') {
         once: true
     });
 } else {
-    init().catch(error => window.quizLoader.fail(error));
+    init();
 }
