@@ -23,4 +23,6 @@ class Handler(SimpleHTTPRequestHandler):
 
 if __name__ == '__main__':
     os.chdir(ROOT)
+    print('English Learning Quiz: http://localhost:8000')
+    print('All .js files in src/data/chapters are loaded automatically.')
     ThreadingHTTPServer(('localhost', 8000), Handler).serve_forever()
