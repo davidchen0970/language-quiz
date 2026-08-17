@@ -1,44 +1,109 @@
-(async function loadAllChapters() {
-  const status = document.getElementById('loader-status');
+(function createQuizLoader() {
+    const status = document.getElementById('loader-status');
+    const dataPath = 'src/data/chapters/';
+    const loadedScripts = new Set();
+    const loadedChapterFiles = new Set();
 
-  function loadScript(src) {
-    return new Promise((resolve, reject) => {
-      const script = document.createElement('script');
-      script.src = src;
-      script.onload = resolve;
-      script.onerror = () => reject(new Error(`Unable to load: ${src}`));
-      document.head.appendChild(script);
-    });
-  }
+    let questionsReady = false;
+    let manifestPromise = null;
 
-  try {
-    await loadScript('src/data/questions.js');
-
-    // Live Server、GitHub Pages 和一般靜態伺服器皆使用 manifest。
-    const response = await fetch('src/data/chapters/manifest.json', {
-      cache: 'no-store'
-    });
-
-    if (!response.ok) {
-      throw new Error(`Unable to read chapter manifest: HTTP ${response.status}`);
+    function setStatus(message, isError = false) {
+        if (!status) return;
+        status.textContent = message;
+        status.style.color = isError ? '#be123c' : '#64748b';
     }
 
-    const files = await response.json();
-    const chapterFiles = files.filter(file =>
-      typeof file === 'string' && file.toLowerCase().endsWith('.js')
-    );
+    function loadScript(src) {
+        if (loadedScripts.has(src)) return Promise.resolve();
 
-    for (const file of chapterFiles) {
-      await loadScript(`src/data/chapters/${file}`);
+        return new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = src;
+            script.onload = () => {
+                loadedScripts.add(src);
+                resolve();
+            };
+            script.onerror = () => reject(new Error(`Unable to load: ${src}`));
+            document.head.appendChild(script);
+        });
     }
 
-    await loadScript('src/app.js');
-    if (status) status.remove();
-  } catch (error) {
-    console.error(error);
-    if (status) {
-      status.textContent = 'Question data failed to load. Run python3 tools/generate_manifest.py after changing chapter files.';
-      status.style.color = '#be123c';
+    async function ensureQuestionContainer() {
+        if (questionsReady) return;
+        await loadScript('src/data/questions.js');
+        questionsReady = true;
     }
-  }
+
+    async function getManifest() {
+        if (!manifestPromise) {
+            manifestPromise = fetch(`${dataPath}manifest.json`, {
+                cache: 'no-store'
+            })
+                .then(response => {
+                    if (response.status === 404) return [];
+                    if (!response.ok) {
+                        throw new Error(`Unable to read chapter manifest: HTTP ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(files => files.filter(file =>
+                    typeof file === 'string' && file.toLowerCase().endsWith('.js')
+                ));
+        }
+
+        return manifestPromise;
+    }
+
+    function markSource(startIndex, file) {
+        for (let i = startIndex; i < questions.length; i++) {
+            if (!questions[i].__sourceFile) questions[i].__sourceFile = file;
+        }
+    }
+
+    async function loadChapterFile(file) {
+        if (loadedChapterFiles.has(file)) return;
+
+        await ensureQuestionContainer();
+
+        const before = questions.length;
+        await loadScript(`${dataPath}${file}`);
+        markSource(before, file);
+        loadedChapterFiles.add(file);
+    }
+
+    window.quizLoader = {
+        async init() {
+            setStatus('Loading chapter list...');
+            await ensureQuestionContainer();
+            return getManifest();
+        },
+
+        async loadChapter(file) {
+            setStatus('Loading chapter...');
+            await loadChapterFile(file);
+        },
+
+        async loadAll() {
+            setStatus('Loading all chapters...');
+
+            const files = await getManifest();
+            for (const file of files) {
+                await loadChapterFile(file);
+            }
+        },
+
+        finish() {
+            if (status) status.remove();
+        },
+
+        fail(error) {
+            console.error(error);
+            setStatus(
+                'Question data failed to load. Run python3 tools/generate_manifest.py after changing chapter files.',
+                true
+            );
+        }
+    };
+
+    loadScript('src/app.js').catch(error => window.quizLoader.fail(error));
 })();

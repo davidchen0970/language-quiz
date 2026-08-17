@@ -1,6 +1,8 @@
 let quiz = [],
     index = 0,
-    answers = [];
+    answers = [],
+    chapterFiles = [],
+    activeLoad = Promise.resolve();
 
 const $ = id => document.getElementById(id);
 
@@ -13,17 +15,30 @@ const shuffle = a => {
     return b;
 };
 
-const chapterKey = q => `${q.chapter} ${q.chapterName}`;
+const chapterKey = q => `${q.chapter || ''} ${q.chapterName || ''}`.trim();
+const tagText = q => q.tag || q.category || 'General';
+const questionText = q => q.sentence || q.question || '';
+const explanationText = q => q.exp || q.explanation || '';
+const fileLabel = file => file.replace(/\.js$/i, '').replace(/[-_]+/g, ' ');
+const storageKey = 'genericQuizState';
+
+function selectedChapter() {
+    return $('chapter').value;
+}
+
+function currentQuestions() {
+    const c = selectedChapter(),
+        t = $('category').value;
+
+    return questions.filter(q =>
+        (c === 'all' || q.__sourceFile === c || chapterKey(q) === c) &&
+        (t === 'all' || tagText(q) === t)
+    );
+}
 
 function updateCategories() {
-    const c = $('chapter').value,
-        p = $('category').value;
-
-    const pool = c === 'all'
-        ? questions
-        : questions.filter(q => chapterKey(q) === c);
-
-    const tags = [...new Set(pool.map(q => q.tag))].sort();
+    const p = $('category').value;
+    const tags = [...new Set(currentQuestions().map(tagText))].sort();
 
     $('category').innerHTML = '<option value="all">All Categories</option>';
 
@@ -36,14 +51,21 @@ function updateCategories() {
     $('category').value = tags.includes(p) ? p : 'all';
 }
 
-function makeQuiz() {
-    const c = $('chapter').value,
-        t = $('category').value;
+async function ensureSelectedData() {
+    const c = selectedChapter();
 
-    let pool = questions.filter(q =>
-        (c === 'all' || chapterKey(q) === c) &&
-        (t === 'all' || q.tag === t)
-    );
+    if (c === 'all') {
+        await window.quizLoader.loadAll();
+        return;
+    }
+
+    if (chapterFiles.includes(c)) {
+        await window.quizLoader.loadChapter(c);
+    }
+}
+
+function buildQuiz() {
+    let pool = currentQuestions();
 
     pool = shuffle(pool).map(q => {
         const m = shuffle(
@@ -75,6 +97,19 @@ function makeQuiz() {
     render();
 }
 
+function makeQuiz() {
+    activeLoad = activeLoad
+        .then(async () => {
+            await ensureSelectedData();
+            updateCategories();
+            buildQuiz();
+            window.quizLoader.finish();
+        })
+        .catch(error => window.quizLoader.fail(error));
+
+    return activeLoad;
+}
+
 function render() {
     if (!quiz.length) {
         $('tag').textContent = 'No Questions';
@@ -93,8 +128,8 @@ function render() {
     const q = quiz[index],
         picked = answers[index];
 
-    $('tag').textContent = `${q.chapter} ${q.chapterName} | ${q.tag}`;
-    $('question').textContent = q.sentence;
+    $('tag').textContent = `${chapterKey(q)} | ${tagText(q)}`;
+    $('question').textContent = questionText(q);
     $('counter').textContent = `Question ${index + 1} / ${quiz.length}`;
     $('bar').style.width = `${((index + 1) / quiz.length) * 100}%`;
 
@@ -118,7 +153,7 @@ function render() {
 
         const l = document.createElement('span');
         l.className = 'letter';
-        l.textContent = 'ABCD'[i];
+        l.textContent = 'ABCD'[i] || String(i + 1);
 
         const s = document.createElement('span');
         s.textContent = text;
@@ -136,7 +171,7 @@ function render() {
             `explanation ${picked === q.answer ? 'good' : 'bad'}`;
 
         $('explanation').textContent =
-            `${picked === q.answer ? 'Correct!' : 'Incorrect.'} ${q.exp}`;
+            `${picked === q.answer ? 'Correct.' : 'Incorrect.'} ${explanationText(q)}`;
     }
 
     $('prev').disabled = index === 0;
@@ -179,13 +214,13 @@ function showResult() {
     $('summary').textContent =
         `Accuracy ${Math.round(score / quiz.length * 100)}%, Unanswered ${answers.filter(a => a === null).length} questions.`;
 
-    localStorage.removeItem('englishQuizState');
+    localStorage.removeItem(storageKey);
 }
 
 function save() {
     if (quiz.length) {
         localStorage.setItem(
-            'englishQuizState',
+            storageKey,
             JSON.stringify({
                 quiz,
                 index,
@@ -198,7 +233,7 @@ function save() {
 function restore() {
     try {
         const s = JSON.parse(
-            localStorage.getItem('englishQuizState')
+            localStorage.getItem(storageKey)
         );
 
         if (s?.quiz?.length) {
@@ -213,36 +248,36 @@ function restore() {
     return false;
 }
 
-function init() {
-    [...new Set(questions.map(chapterKey))]
-        .sort((a, b) =>
-            a.localeCompare(b, undefined, {
-                numeric: true
-            })
-        )
-        .forEach(c => {
-            const o = document.createElement('option');
-            o.value = o.textContent = c;
-            $('chapter').appendChild(o);
-        });
+function populateChapterSelect() {
+    chapterFiles.forEach(file => {
+        const o = document.createElement('option');
+        o.value = file;
+        o.textContent = fileLabel(file);
+        $('chapter').appendChild(o);
+    });
 
-    $('chapter').onchange = () => {
-        updateCategories();
-        makeQuiz();
-    };
+    if (chapterFiles.length && selectedChapter() === 'all') {
+        $('chapter').value = chapterFiles[0];
+    }
+}
 
+async function init() {
+    chapterFiles = await window.quizLoader.init();
+    populateChapterSelect();
+
+    $('chapter').onchange = makeQuiz;
     $('category').onchange = makeQuiz;
     $('size').onchange = makeQuiz;
 
-    updateCategories();
-
-    if (!restore()) makeQuiz();
+    if (!restore()) await makeQuiz();
 }
 
 if (document.readyState === 'loading') {
-    window.addEventListener('DOMContentLoaded', init, {
+    window.addEventListener('DOMContentLoaded', () => {
+        init().catch(error => window.quizLoader.fail(error));
+    }, {
         once: true
     });
 } else {
-    init();
+    init().catch(error => window.quizLoader.fail(error));
 }
