@@ -93,6 +93,45 @@ jobs:
           echo "Published file tree:"
           find publish -maxdepth 5 -type f | sort | sed -n '1,260p'
 
+      - name: Normalize quiz runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          for quiz_dir in english_toeic korean_topik; do
+            # Keep the loader identical across quiz pages. This also prevents a
+            # malformed branch-local loader from breaking page navigation.
+            cp site-main/src/chapter-loader.js "publish/${quiz_dir}/src/chapter-loader.js"
+
+            # localStorage is shared by every path on the same GitHub Pages
+            # origin. Namespace saved state by pathname so one quiz cannot
+            # restore another quiz's question/index state after navigation.
+            python3 - "publish/${quiz_dir}/src/app.js" <<'PY'
+          import pathlib
+          import sys
+
+          path = pathlib.Path(sys.argv[1])
+          source = path.read_text(encoding='utf-8')
+          old = "const storageKey = 'genericQuizState';"
+          new = "const storageKey = `genericQuizState:${location.pathname.replace(/\\/$/, '') || '/'}`;"
+
+          if old not in source:
+              raise SystemExit(f"Expected storage key declaration not found in {path}")
+
+          path.write_text(source.replace(old, new, 1), encoding='utf-8')
+          PY
+          done
+
+      - name: Validate published JavaScript
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          for quiz_dir in english_toeic korean_topik; do
+            node --check "publish/${quiz_dir}/src/chapter-loader.js"
+            node --check "publish/${quiz_dir}/src/app.js"
+          done
+
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v4
         with:
