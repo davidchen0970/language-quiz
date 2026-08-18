@@ -160,11 +160,13 @@ jobs:
           rsync -av --delete \
             --exclude='.git' \
             --exclude='.github' \
+            --exclude='src/styles.css' \
             site-english/ publish/english_toeic/
 
           rsync -av --delete \
             --exclude='.git' \
             --exclude='.github' \
+            --exclude='src/styles.css' \
             site-korean/ publish/korean_topik/
 
           touch publish/.nojekyll
@@ -175,6 +177,84 @@ jobs:
             -type f \
             | sort \
             | sed -n '1,260p'
+
+      # main/src/styles.css is the only stylesheet deployed to every page.
+      - name: Force shared stylesheet from main
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          style_source="site-main/src/styles.css"
+          test -f "${style_source}"
+
+          for quiz_dir in english_toeic korean_topik; do
+            style_target="publish/${quiz_dir}/src/styles.css"
+            mkdir -p "$(dirname "${style_target}")"
+            rm -f "${style_target}"
+            cp "${style_source}" "${style_target}"
+            cmp --silent "${style_source}" "${style_target}"
+            echo "main/src/styles.css -> ${style_target}"
+          done
+
+      - name: Add stylesheet cache version
+        shell: bash
+        env:
+          STYLE_VERSION: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+
+          python3 <<'PY'
+          import os
+          import re
+          from pathlib import Path
+
+          version = os.environ["STYLE_VERSION"]
+          pages = [
+              Path("publish/english_toeic/index.html"),
+              Path("publish/korean_topik/index.html"),
+          ]
+
+          for page in pages:
+              source = page.read_text(encoding="utf-8")
+              stylesheet = f'<link rel="stylesheet" href="src/styles.css?v={version}">'
+
+              # Accept src/styles.css, ./src/styles.css, and an existing ?v value.
+              updated, count = re.subn(
+                  r'<link\s+[^>]*rel=["\']stylesheet["\'][^>]*href=["\'](?:\./)?src/styles\.css(?:\?v=[^"\']*)?["\'][^>]*>',
+                  stylesheet,
+                  source,
+                  count=1,
+                  flags=re.IGNORECASE,
+              )
+
+              if count == 0:
+                  # Older main/index.html stored its CSS inline. Remove that block
+                  # on the landing page, then add the shared stylesheet to <head>.
+                  if page == Path("publish/index.html"):
+                      updated = re.sub(
+                          r'\s*<style>.*?</style>',
+                          '',
+                          source,
+                          count=1,
+                          flags=re.IGNORECASE | re.DOTALL,
+                      )
+                  else:
+                      updated = source
+
+                  if re.search(r'</head>', updated, flags=re.IGNORECASE) is None:
+                      raise SystemExit(f"Closing </head> not found in {page}")
+
+                  updated = re.sub(
+                      r'</head>',
+                      f'  {stylesheet}\n</head>',
+                      updated,
+                      count=1,
+                      flags=re.IGNORECASE,
+                  )
+
+              page.write_text(updated, encoding="utf-8")
+              print(f"Shared stylesheet enabled in {page}")
+          PY
 
       - name: Normalize quiz runtime
         shell: bash
@@ -257,6 +337,20 @@ jobs:
                   f"with {len(manifest_files)} chapter file(s)."
               )
           PY
+
+      - name: Validate shared stylesheet
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          for target in \
+            publish/src/styles.css \
+            publish/english_toeic/src/styles.css \
+            publish/korean_topik/src/styles.css
+          do
+            cmp --silent site-main/src/styles.css "${target}"
+            echo "Verified main stylesheet: ${target}"
+          done
 
       - name: Validate published JavaScript
         shell: bash
