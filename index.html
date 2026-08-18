@@ -6,131 +6,97 @@
   <title>測驗網站</title>
 
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
+    :root {
+      --bg: #f5f5fa;
+      --card: #ffffff;
+      --text: #000000;
+      --muted: #707070;
+      --border: #dadada;
+      --blue: #34495e;
+      --blue-soft: rgba(52, 73, 94, .10);
+      --purple: #6b69d6;
+      --purple-soft: rgba(107, 105, 214, .12);
     }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", sans-serif;
+      background: var(--bg);
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 24px;
-      color: #0f172a;
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
     }
-
     main {
       width: 100%;
       max-width: 520px;
-      background: #ffffff;
-      border-radius: 24px;
-      padding: 40px 32px;
-      box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.08), 0 0 1px rgba(0, 0, 0, 0.1);
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 38px 32px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.06);
     }
-
-    .header {
-      text-align: center;
-      margin-bottom: 32px;
-    }
-
+    .header { text-align: center; margin-bottom: 30px; }
     .icon-badge {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       width: 56px;
       height: 56px;
-      background: #eff6ff;
-      border-radius: 16px;
-      font-size: 28px;
+      background: var(--blue-soft);
+      border: 1px solid #d5dde5;
+      border-radius: 14px;
+      font-size: 27px;
       margin-bottom: 16px;
+      box-shadow: 0 4px 12px rgba(52,73,94,.10);
     }
-
-    h1 {
-      font-size: 26px;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-      margin-bottom: 8px;
-    }
-
-    p.subtitle {
-      color: #64748b;
-      font-size: 15px;
-      line-height: 1.5;
-    }
-
-    .links {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
+    h1 { font-size: 26px; font-weight: 800; letter-spacing: -.04em; margin-bottom: 7px; }
+    p.subtitle { color: var(--muted); font-size: 15px; }
+    .links { display: flex; flex-direction: column; gap: 14px; }
     .link-button {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 20px 24px;
-      color: #ffffff;
+      padding: 19px 20px;
+      color: var(--text);
       text-decoration: none;
-      border-radius: 18px;
-      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: #fff;
+      box-shadow: 0 4px 12px rgba(0,0,0,.04);
+      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease, background .2s ease;
     }
-
-    .link-button:hover {
-      transform: translateY(-3px);
-    }
-
-    .english {
-      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-      box-shadow: 0 8px 20px -4px rgba(37, 99, 235, 0.35);
-    }
-
-    .english:hover {
-      box-shadow: 0 12px 24px -4px rgba(37, 99, 235, 0.45);
-    }
-
-    .korean {
-      background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
-      box-shadow: 0 8px 20px -4px rgba(139, 92, 246, 0.35);
-    }
-
-    .korean:hover {
-      box-shadow: 0 12px 24px -4px rgba(139, 92, 246, 0.45);
-    }
-
-    .button-content {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .button-title {
-      font-size: 18px;
-      font-weight: 700;
-      letter-spacing: -0.2px;
-    }
-
-    .button-description {
-      color: rgba(255, 255, 255, 0.85);
-      font-size: 14px;
-      font-weight: 400;
-    }
-
+    .link-button:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(0,0,0,.08); }
+    .english:hover { border-color: #bdc3c7; background: #f7f8fa; }
+    .korean:hover { border-color: #c9c8ee; background: #f8f8fc; }
+    .button-content { display: flex; flex-direction: column; gap: 3px; }
+    .button-title { font-size: 17px; font-weight: 750; letter-spacing: -.02em; }
+    .button-description { color: var(--muted); font-size: 14px; font-weight: 400; }
     .arrow-icon {
-      font-size: 20px;
-      transition: transform 0.2s ease;
+      display: grid;
+      place-items: center;
+      flex: 0 0 34px;
+      height: 34px;
+      margin-left: 14px;
+      border-radius: 10px;
+      color: var(--blue);
+      background: var(--blue-soft);
+      font-size: 18px;
+      transition: transform .2s ease;
     }
-
-    .link-button:hover .arrow-icon {
-      transform: translateX(4px);
-    }
-
-    .link-button:focus-visible {
-      outline: 3px solid #fbbf24;
-      outline-offset: 3px;
+    .korean .arrow-icon { color: var(--purple); background: var(--purple-soft); }
+    .link-button:hover .arrow-icon { transform: translateX(3px); }
+    .link-button:focus-visible { outline: 3px solid rgba(52,73,94,.28); outline-offset: 3px; }
+    @media (max-width: 560px) { main { padding: 30px 20px; } .link-button { padding: 17px 16px; } }
+    @media (prefers-color-scheme: dark) {
+      :root { --bg: #303030; --card: #424242; --text: rgba(255,255,255,.9); --muted: rgba(255,255,255,.7); --border: rgba(255,255,255,.12); --blue: #ecf0f1; --blue-soft: rgba(236,240,241,.12); --purple: #bdc3c7; --purple-soft: rgba(189,195,199,.14); }
+      .link-button { background: #424242; }
+      .english:hover { background: #4b4b4b; border-color: #717171; }
+      .korean:hover { background: #4b4b4b; border-color: #717171; }
+      .icon-badge { border-color: rgba(255,255,255,.16); }
     }
   </style>
 </head>
