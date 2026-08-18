@@ -193,10 +193,18 @@ jobs:
             rm -f "${style_target}"
             cp "${style_source}" "${style_target}"
             cmp --silent "${style_source}" "${style_target}"
+
+            theme_source="site-main/src/theme.js"
+            theme_target="publish/${quiz_dir}/src/theme.js"
+            test -f "${theme_source}"
+            cp "${theme_source}" "${theme_target}"
+            cmp --silent "${theme_source}" "${theme_target}"
+
             echo "main/src/styles.css -> ${style_target}"
+            echo "main/src/theme.js -> ${theme_target}"
           done
 
-      - name: Add stylesheet cache version
+      - name: Add quiz stylesheet cache version
         shell: bash
         env:
           STYLE_VERSION: ${{ github.sha }}
@@ -216,44 +224,35 @@ jobs:
 
           for page in pages:
               source = page.read_text(encoding="utf-8")
-              stylesheet = f'<link rel="stylesheet" href="src/styles.css?v={version}">'
-
-              # Accept src/styles.css, ./src/styles.css, and an existing ?v value.
               updated, count = re.subn(
-                  r'<link\s+[^>]*rel=["\']stylesheet["\'][^>]*href=["\'](?:\./)?src/styles\.css(?:\?v=[^"\']*)?["\'][^>]*>',
-                  stylesheet,
+                  r'href=["\'](?:\./)?src/styles\.css(?:\?v=[^"\']*)?["\']',
+                  f'href="src/styles.css?v={version}"',
                   source,
+                  count=1,
+              )
+              if count != 1:
+                  raise SystemExit(f"Stylesheet reference not found in {page}")
+              theme_script = f'<script src="src/theme.js?v={version}"></script>'
+              updated, script_count = re.subn(
+                  r'<script\s+[^>]*src=["\'](?:\./)?src/theme\.js(?:\?v=[^"\']*)?["\'][^>]*></script>',
+                  theme_script,
+                  updated,
                   count=1,
                   flags=re.IGNORECASE,
               )
-
-              if count == 0:
-                  # Older main/index.html stored its CSS inline. Remove that block
-                  # on the landing page, then add the shared stylesheet to <head>.
-                  if page == Path("publish/index.html"):
-                      updated = re.sub(
-                          r'\s*<style>.*?</style>',
-                          '',
-                          source,
-                          count=1,
-                          flags=re.IGNORECASE | re.DOTALL,
-                      )
-                  else:
-                      updated = source
-
-                  if re.search(r'</head>', updated, flags=re.IGNORECASE) is None:
-                      raise SystemExit(f"Closing </head> not found in {page}")
-
-                  updated = re.sub(
-                      r'</head>',
-                      f'  {stylesheet}\n</head>',
+              if script_count == 0:
+                  updated, body_count = re.subn(
+                      r'</body>',
+                      f'  {theme_script}\n</body>',
                       updated,
                       count=1,
                       flags=re.IGNORECASE,
                   )
+                  if body_count != 1:
+                      raise SystemExit(f"Closing </body> not found in {page}")
 
               page.write_text(updated, encoding="utf-8")
-              print(f"Shared stylesheet enabled in {page}")
+              print(f"Versioned quiz theme assets in {page}")
           PY
 
       - name: Normalize quiz runtime
@@ -350,6 +349,14 @@ jobs:
           do
             cmp --silent site-main/src/styles.css "${target}"
             echo "Verified main stylesheet: ${target}"
+          done
+
+          for target in \
+            publish/english_toeic/src/theme.js \
+            publish/korean_topik/src/theme.js
+          do
+            cmp --silent site-main/src/theme.js "${target}"
+            echo "Verified main theme controller: ${target}"
           done
 
       - name: Validate published JavaScript
