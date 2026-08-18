@@ -48,7 +48,11 @@ jobs:
         run: |
           set -euo pipefail
 
-          for item in "site-main:main" "site-english:english_toeic" "site-korean:korean_topik"; do
+          for item in \
+            "site-main:main" \
+            "site-english:english_toeic" \
+            "site-korean:korean_topik"
+          do
             directory="${item%%:*}"
             expected_branch="${item##*:}"
 
@@ -58,11 +62,86 @@ jobs:
             echo "Commit: $(git -C "${directory}" rev-parse HEAD)"
             echo "Commit message: $(git -C "${directory}" log -1 --pretty=%s)"
             echo "Files:"
-            find "${directory}" -maxdepth 3 -type f \
+
+            find "${directory}" \
+              -maxdepth 3 \
+              -type f \
               -not -path '*/.git/*' \
               | sort \
               | sed -n '1,160p'
           done
+
+      # Generate manifest.json in both quiz branches before publishing.
+      - name: Generate chapter manifests
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          for site_dir in site-english site-korean; do
+            echo "============================================================"
+            echo "Generating manifest for ${site_dir}"
+
+            generator="${site_dir}/tools/generate_manifest.py"
+            chapter_dir="${site_dir}/src/data/chapters"
+            manifest="${chapter_dir}/manifest.json"
+
+            test -f "${generator}"
+            test -d "${chapter_dir}"
+
+            python3 "${generator}"
+
+            test -f "${manifest}"
+
+            echo "Generated manifest:"
+            cat "${manifest}"
+            echo
+          done
+
+      # Verify that each manifest matches the chapter JavaScript files.
+      - name: Validate generated manifests
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          python3 <<'PY'
+          import json
+          from pathlib import Path
+
+          sites = {
+              "English TOEIC": Path("site-english"),
+              "Korean TOPIK": Path("site-korean"),
+          }
+
+          for site_name, site_root in sites.items():
+              chapter_dir = site_root / "src" / "data" / "chapters"
+              manifest_path = chapter_dir / "manifest.json"
+
+              expected_files = sorted(
+                  path.name
+                  for path in chapter_dir.glob("*.js")
+                  if path.is_file()
+              )
+
+              with manifest_path.open("r", encoding="utf-8") as file:
+                  manifest_files = json.load(file)
+
+              if not isinstance(manifest_files, list):
+                  raise SystemExit(
+                      f"{manifest_path} must contain a JSON array."
+                  )
+
+              if manifest_files != expected_files:
+                  raise SystemExit(
+                      f"{site_name} manifest does not match chapter files.\n"
+                      f"Expected: {expected_files}\n"
+                      f"Actual:   {manifest_files}"
+                  )
+
+              print(
+                  f"{site_name}: validated {manifest_path} "
+                  f"with {len(manifest_files)} chapter file(s)."
+              )
+          PY
 
       - name: Prepare publish folder
         shell: bash
@@ -91,7 +170,11 @@ jobs:
           touch publish/.nojekyll
 
           echo "Published file tree:"
-          find publish -maxdepth 5 -type f | sort | sed -n '1,260p'
+          find publish \
+            -maxdepth 5 \
+            -type f \
+            | sort \
+            | sed -n '1,260p'
 
       - name: Normalize quiz runtime
         shell: bash
@@ -99,28 +182,81 @@ jobs:
           set -euo pipefail
 
           for quiz_dir in english_toeic korean_topik; do
-            # Keep the loader identical across quiz pages. This also prevents a
-            # malformed branch-local loader from breaking page navigation.
-            cp site-main/src/chapter-loader.js "publish/${quiz_dir}/src/chapter-loader.js"
+            loader_source="site-main/src/chapter-loader.js"
+            loader_target="publish/${quiz_dir}/src/chapter-loader.js"
+            app_file="publish/${quiz_dir}/src/app.js"
 
-            # localStorage is shared by every path on the same GitHub Pages
-            # origin. Namespace saved state by pathname so one quiz cannot
-            # restore another quiz's question/index state after navigation.
-            python3 - "publish/${quiz_dir}/src/app.js" <<'PY'
+            test -f "${loader_source}"
+            test -f "${app_file}"
+
+            # Keep the loader identical across quiz pages.
+            cp "${loader_source}" "${loader_target}"
+
+            # Namespace localStorage by path to isolate quiz state.
+            python3 - "${app_file}" <<'PY'
           import pathlib
           import sys
 
           path = pathlib.Path(sys.argv[1])
-          source = path.read_text(encoding='utf-8')
+          source = path.read_text(encoding="utf-8")
           old = "const storageKey = 'genericQuizState';"
           new = "const storageKey = `genericQuizState:${location.pathname.replace(/\\/$/, '') || '/'}`;"
 
           if old not in source:
-              raise SystemExit(f"Expected storage key declaration not found in {path}")
+              raise SystemExit(
+                  f"Expected storage key declaration not found in {path}"
+              )
 
-          path.write_text(source.replace(old, new, 1), encoding='utf-8')
+          path.write_text(source.replace(old, new, 1), encoding="utf-8")
           PY
           done
+
+      # Verify the manifests after all files are copied to publish.
+      - name: Validate published manifests
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          python3 <<'PY'
+          import json
+          from pathlib import Path
+
+          for quiz_dir in ("english_toeic", "korean_topik"):
+              chapter_dir = (
+                  Path("publish")
+                  / quiz_dir
+                  / "src"
+                  / "data"
+                  / "chapters"
+              )
+              manifest_path = chapter_dir / "manifest.json"
+
+              if not manifest_path.is_file():
+                  raise SystemExit(
+                      f"Published manifest was not found: {manifest_path}"
+                  )
+
+              actual_files = sorted(
+                  path.name
+                  for path in chapter_dir.glob("*.js")
+                  if path.is_file()
+              )
+
+              with manifest_path.open("r", encoding="utf-8") as file:
+                  manifest_files = json.load(file)
+
+              if manifest_files != actual_files:
+                  raise SystemExit(
+                      f"Published manifest is inconsistent: {manifest_path}\n"
+                      f"Expected: {actual_files}\n"
+                      f"Actual:   {manifest_files}"
+                  )
+
+              print(
+                  f"Validated {manifest_path} "
+                  f"with {len(manifest_files)} chapter file(s)."
+              )
+          PY
 
       - name: Validate published JavaScript
         shell: bash
