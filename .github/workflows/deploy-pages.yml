@@ -169,6 +169,18 @@ jobs:
             --exclude='src/styles.css' \
             site-korean/ publish/korean_topik/
 
+          # Quiz branches keep their page as quiz.html so rebasing onto main
+          # never merges two unrelated index.html files. GitHub Pages still
+          # receives index.html inside each published subdirectory.
+          for quiz_dir in english_toeic korean_topik; do
+            quiz_page="publish/${quiz_dir}/quiz.html"
+            index_page="publish/${quiz_dir}/index.html"
+
+            test -f "${quiz_page}"
+            rm -f "${index_page}"
+            mv "${quiz_page}" "${index_page}"
+          done
+
           touch publish/.nojekyll
 
           echo "Published file tree:"
