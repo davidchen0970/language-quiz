@@ -220,6 +220,27 @@ select:focus-visible {
   font-weight: 800;
 }
 
+.passage {
+  margin: 0 0 24px;
+  padding: 22px 24px;
+  color: var(--text-primary);
+  background: var(--body-background);
+  border: 1px solid var(--control-border-color);
+  border-left: 4px solid var(--theme-color);
+  border-radius: var(--radius-control);
+  line-height: 1.8;
+  white-space: normal;
+}
+
+.passage-title {
+  margin: 0 0 12px;
+  font-size: 18px;
+  line-height: 1.4;
+}
+
+.passage p { margin: 0; }
+.passage p + p { margin-top: 12px; }
+
 .card h2 {
   margin: 0;
   font-size: clamp(21px, 3vw, 27px);

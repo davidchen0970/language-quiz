@@ -54,10 +54,30 @@
         return manifestPromise;
     }
 
-    function markSource(startIndex, file) {
-        for (let i = startIndex; i < questions.length; i++) {
-            if (!questions[i].__sourceFile) questions[i].__sourceFile = file;
-        }
+    function normalizeLoadedQuestions(startIndex, file) {
+        const loaded = questions.splice(startIndex);
+        const normalized = [];
+
+        loaded.forEach((item, groupIndex) => {
+            if (!Array.isArray(item.questions)) {
+                normalized.push({ ...item, __sourceFile: item.__sourceFile || file });
+                return;
+            }
+
+            const { questions: childQuestions, ...shared } = item;
+            const groupId = `${file}:${groupIndex}`;
+
+            childQuestions.forEach(child => {
+                normalized.push({
+                    ...shared,
+                    ...child,
+                    __passageGroup: groupId,
+                    __sourceFile: child.__sourceFile || shared.__sourceFile || file
+                });
+            });
+        });
+
+        questions.push(...normalized);
     }
 
     async function loadChapterFile(file) {
@@ -67,7 +87,7 @@
 
         const before = questions.length;
         await loadScript(`${dataPath}${file}`);
-        markSource(before, file);
+        normalizeLoadedQuestions(before, file);
         loadedChapterFiles.add(file);
     }
 

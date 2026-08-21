@@ -19,6 +19,8 @@ const chapterKey = q => `${q.chapter || ''} ${q.chapterName || ''}`.trim();
 const tagText = q => q.tag || q.category || 'General';
 const questionText = q => q.sentence || q.question || '';
 const explanationText = q => q.exp || q.explanation || '';
+const passageText = q => q.passage || q.article || q.reading || '';
+const passageTitle = q => q.passageTitle || q.articleTitle || '';
 const fileLabel = file => file.replace(/\.js$/i, '').replace(/[-_]+/g, ' ');
 const storageKey = 'genericQuizState';
 
@@ -65,9 +67,15 @@ async function ensureSelectedData() {
 }
 
 function buildQuiz() {
-    let pool = currentQuestions();
+    const grouped = new Map();
 
-    pool = shuffle(pool).map(q => {
+    currentQuestions().forEach((q, position) => {
+        const key = q.__passageGroup || `single:${position}`;
+        if (!grouped.has(key)) grouped.set(key, []);
+        grouped.get(key).push(q);
+    });
+
+    let pool = shuffle([...grouped.values()]).flat().map(q => {
         const m = shuffle(
             q.options.map((text, i) => ({
                 text,
@@ -110,11 +118,51 @@ function makeQuiz() {
     return activeLoad;
 }
 
+function ensurePassagePanel() {
+    let panel = $('passage');
+
+    if (panel) return panel;
+
+    panel = document.createElement('article');
+    panel.id = 'passage';
+    panel.className = 'passage hidden';
+    panel.setAttribute('aria-label', 'Reading passage');
+
+    const question = $('question');
+    question.parentNode.insertBefore(panel, question);
+    return panel;
+}
+
+function renderPassage(q) {
+    const panel = ensurePassagePanel();
+    const text = passageText(q);
+
+    panel.replaceChildren();
+    panel.classList.toggle('hidden', !text);
+
+    if (!text) return;
+
+    const title = passageTitle(q);
+    if (title) {
+        const heading = document.createElement('h3');
+        heading.className = 'passage-title';
+        heading.textContent = title;
+        panel.appendChild(heading);
+    }
+
+    text.split(/\n{2,}/).forEach(paragraphText => {
+        const paragraph = document.createElement('p');
+        paragraph.textContent = paragraphText.trim();
+        if (paragraph.textContent) panel.appendChild(paragraph);
+    });
+}
+
 function render() {
     if (!quiz.length) {
         $('tag').textContent = 'No Questions';
         $('question').textContent =
             'There are no questions matching the current criteria. Please choose another chapter or category.';
+        renderPassage({});
         $('options').innerHTML = '';
         $('counter').textContent = '0 Questions';
         $('bar').style.width = '0%';
@@ -129,6 +177,7 @@ function render() {
         picked = answers[index];
 
     $('tag').textContent = `${chapterKey(q)} | ${tagText(q)}`;
+    renderPassage(q);
     $('question').textContent = questionText(q);
     $('counter').textContent = `Question ${index + 1} / ${quiz.length}`;
     $('bar').style.width = `${((index + 1) / quiz.length) * 100}%`;
