@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>語文能力測驗</title>
+    <link rel="stylesheet" href="src/styles.css?v=69b8bd036421f3a39afac149317e669a994d2c2d">
+</head>
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <h1>語文能力測驗</h1>
+            <div id="score" class="badge">得分：0 / 0</div>
+        </div>
+    </header>
+    <main class="container">
+        <section class="panel">
+            <div class="controls"><label class="field">章節選擇<select id="chapter">
+                        <option value="all">全部章節</option>
+                    </select></label><label class="field">題目分類<select id="category">
+                        <option value="all">全部分類</option>
+                    </select></label><label class="field">測驗題數<select id="size">
+                        <option value="20">隨機 20 題</option>
+                        <option value="40">隨機 40 題</option>
+                        <option value="all">全部題目</option>
+                    </select></label><button class="secondary" onclick="makeQuiz()">🎲 重新產生測驗</button></div>
+            <div class="progress-meta"><span id="counter">載入中</span><span>進度</span></div>
+            <div class="progress">
+                <div id="bar"></div>
+            </div>
+        </section>
+        <section id="quiz" class="card"><span id="tag" class="tag"></span>
+            <h2 id="question">載入中...</h2>
+            <div id="options" class="options"></div>
+            <div id="explanation" class="explanation hidden"></div>
+            <div class="nav"><button id="prev" class="secondary" onclick="move(-1)">上一題</button><button id="next"
+                    class="primary" onclick="move(1)">下一題</button></div>
+        </section>
+        <section id="result" class="card result hidden">
+            <div style="font-size:52px">🏆</div>
+            <h2>測驗完成</h2>
+            <div id="final" class="score"></div>
+            <p id="summary"></p><button class="primary" onclick="makeQuiz()">再練習一次</button>
+        </section>
+    </main>
+    <footer>資料保存在瀏覽器本機，不會上傳。</footer>
+    <div id="loader-status" style="text-align:center;padding:12px;color:#64748b">正在載入語文題庫...</div>
+    <script src="src/chapter-loader.js"></script>
+  <script src="src/theme.js?v=69b8bd036421f3a39afac149317e669a994d2c2d"></script>
+</body>
+</html>
