@@ -24,6 +24,31 @@ const passageTitle = q => q.passageTitle || q.articleTitle || '';
 const fileLabel = file => file.replace(/\.js$/i, '').replace(/[-_]+/g, ' ');
 const storageKey = 'genericQuizState';
 
+const SPEECH = 'speechSynthesis' in window && 'SpeechSynthesisUtterance' in window;
+const speechLang = text => /[\u3400-\u9fff]/.test(text) ? 'zh-TW' : 'en-US';
+
+function speak(text, lang) {
+    if (!SPEECH || !text) return;
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = lang || speechLang(text);
+    u.rate = 0.95;
+
+    function preferVoice() {
+        try {
+            const voices = window.speechSynthesis.getVoices();
+            const want = (u.lang || 'en').slice(0, 2).toLowerCase();
+            const match = voices.find(v => (v.lang || '').slice(0, 2).toLowerCase() === want)
+                || voices.find(v => (v.lang || '').toLowerCase().startsWith(u.lang.toLowerCase()));
+            if (match) u.voice = match;
+        } catch {}
+    }
+    preferVoice();
+    window.speechSynthesis.onvoiceschanged = () => preferVoice();
+    window.speechSynthesis.speak(u);
+}
+
+
 function selectedChapter() {
     return $('chapter').value;
 }
@@ -150,6 +175,15 @@ function renderPassage(q) {
         panel.appendChild(heading);
     }
 
+    if (SPEECH) {
+        const readBtn = document.createElement('button');
+        readBtn.type = 'button';
+        readBtn.className = 'speak-passage';
+        readBtn.textContent = '🔊 朗讀全文';
+        readBtn.onclick = () => speak(text, speechLang(text));
+        panel.appendChild(readBtn);
+    }
+
     text.split(/\n{2,}/).forEach(paragraphText => {
         const paragraph = document.createElement('p');
         paragraph.textContent = paragraphText.trim();
@@ -179,6 +213,10 @@ function render() {
     $('tag').textContent = `${chapterKey(q)} | ${tagText(q)}`;
     renderPassage(q);
     $('question').textContent = questionText(q);
+    if (SPEECH) {
+        const qSpeak = $('speak-question');
+        if (qSpeak) qSpeak.onclick = () => speak(questionText(q), speechLang(questionText(q)));
+    }
     $('counter').textContent = `Question ${index + 1} / ${quiz.length}`;
     $('bar').style.width = `${((index + 1) / quiz.length) * 100}%`;
 
@@ -191,8 +229,12 @@ function render() {
     $('options').innerHTML = '';
 
     q.options.forEach((text, i) => {
+        const row = document.createElement('div');
+        row.className = 'option-row';
+
         const b = document.createElement('button');
         b.className = 'option';
+        b.type = 'button';
         b.disabled = picked !== null;
 
         if (picked !== null) {
@@ -210,7 +252,22 @@ function render() {
         b.append(l, s);
         b.onclick = () => choose(i);
 
-        $('options').appendChild(b);
+        row.appendChild(b);
+
+        if (SPEECH) {
+            const speakOpt = document.createElement('button');
+            speakOpt.type = 'button';
+            speakOpt.className = 'speak-btn';
+            speakOpt.textContent = '🔊';
+            speakOpt.setAttribute('aria-label', `朗讀選項 ${l.textContent}`);
+            speakOpt.onclick = e => {
+                e.stopPropagation();
+                speak(text, 'en-US');
+            };
+            row.appendChild(speakOpt);
+        }
+
+        $('options').appendChild(row);
     });
 
     $('explanation').className = 'explanation hidden';

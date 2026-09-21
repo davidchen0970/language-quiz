@@ -248,6 +248,58 @@ select:focus-visible {
   letter-spacing: -0.025em;
 }
 
+.option-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: center;
+}
+
+.opt-text { white-space: normal; }
+
+.speak-btn {
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  display: inline-grid;
+  place-items: center;
+  font-size: 17px;
+  color: var(--text-primary);
+  background: var(--card-background);
+  border: 1px solid var(--control-border-color);
+  border-radius: var(--radius-control);
+  cursor: pointer;
+  transition: background .15s ease, border-color .15s ease;
+}
+.speak-btn:hover { background: var(--accent-soft); border-color: var(--theme-color-dark); }
+
+.question-toolbar { margin: 4px 0 18px; }
+
+.speak-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  color: var(--theme-color);
+  user-select: none;
+}
+.speak-link:hover { text-decoration: underline; }
+
+.speak-passage {
+  display: inline-block;
+  margin: 0 0 14px;
+  font-size: 13px;
+  cursor: pointer;
+  color: var(--theme-color);
+  background: var(--card-background);
+  border: 1px solid var(--control-border-color);
+  border-radius: var(--radius-control);
+  padding: 5px 10px;
+}
+.speak-passage:hover { background: var(--accent-soft); border-color: var(--theme-color-dark); }
+
 .options {
   display: grid;
   gap: 12px;
@@ -399,6 +451,7 @@ html[data-theme="dark"] .header,
 html[data-theme="dark"] select,
 html[data-theme="dark"] .secondary,
 html[data-theme="dark"] .letter,
+html[data-theme="dark"] .speak-btn,
 html[data-theme="dark"] .theme-toggle {
   background: var(--card-background);
 }
@@ -428,6 +481,7 @@ html[data-theme="dark"] .secondary {
 html[data-theme="dark"] select,
 html[data-theme="dark"] .secondary,
 html[data-theme="dark"] .letter,
+html[data-theme="dark"] .speak-btn,
 html[data-theme="dark"] .theme-toggle {
   color: rgba(255, 255, 255, .9);
   border-color: var(--control-border-color);
@@ -435,6 +489,8 @@ html[data-theme="dark"] .theme-toggle {
 
 html[data-theme="dark"] .secondary:hover:not(:disabled),
 html[data-theme="dark"] .option:hover:not(:disabled),
+html[data-theme="dark"] .speak-btn:hover,
+html[data-theme="dark"] .speak-passage:hover,
 html[data-theme="dark"] .theme-toggle:hover:not(:disabled) {
   background: var(--card-background-selected);
   border-color: var(--control-border-color);
