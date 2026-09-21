@@ -169,13 +169,16 @@ jobs:
             --exclude='src/styles.css' \
             site-korean/ publish/korean_topik/
 
-          # Quiz branches keep their page as quiz.html so rebasing onto main
-          # never merges two unrelated index.html files. GitHub Pages still
+          # Quiz pages are shared runtime from main, so English/TOPIK branches
+          # keep their page as quiz.html and main's copy (which carries the
+          # Text-to-Speech controls) always wins. GitHub Pages still
           # receives index.html inside each published subdirectory.
           for quiz_dir in english_toeic korean_topik; do
             quiz_page="publish/${quiz_dir}/quiz.html"
             index_page="publish/${quiz_dir}/index.html"
 
+            test -f "site-main/quiz.html"
+            cp "site-main/quiz.html" "${quiz_page}"
             test -f "${quiz_page}"
             rm -f "${index_page}"
             mv "${quiz_page}" "${index_page}"
@@ -275,13 +278,15 @@ jobs:
           for quiz_dir in english_toeic korean_topik; do
             loader_source="site-main/src/chapter-loader.js"
             loader_target="publish/${quiz_dir}/src/chapter-loader.js"
+            app_source="site-main/src/app.js"
             app_file="publish/${quiz_dir}/src/app.js"
 
             test -f "${loader_source}"
-            test -f "${app_file}"
+            test -f "${app_source}"
 
-            # Keep the loader identical across quiz pages.
+            # Loader and quiz runtime (incl. Text-to-Speech) are shared from main.
             cp "${loader_source}" "${loader_target}"
+            cp "${app_source}" "${app_file}"
 
             # Namespace localStorage by path to isolate quiz state.
             python3 - "${app_file}" <<'PY'
