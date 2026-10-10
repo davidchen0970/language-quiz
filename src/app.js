@@ -24,8 +24,16 @@ const passageTitle = q => q.passageTitle || q.articleTitle || '';
 const fileLabel = file => file.replace(/\.js$/i, '').replace(/[-_]+/g, ' ');
 const storageKey = 'genericQuizState';
 
-const SPEECH = 'speechSynthesis' in window && 'SpeechSynthesisUtterance' in window;
-const speechLang = text => /[\u3400-\u9fff]/.test(text) ? 'zh-TW' : 'en-US';
+const SPEECH =
+    'speechSynthesis' in window &&
+    'SpeechSynthesisUtterance' in window;
+
+function speechLang(text) {
+    if (/[\u3040-\u30ff]/.test(text)) return 'ja-JP';
+    if (/[\uac00-\ud7af]/.test(text)) return 'ko-KR';
+    if (/[\u3400-\u4dbf\u4e00-\u9fff]/.test(text)) return 'zh-TW';
+    return 'en-US';
+}
 
 function speak(text, lang) {
     if (!SPEECH || !text) return;
@@ -262,7 +270,7 @@ function render() {
             speakOpt.setAttribute('aria-label', `朗讀選項 ${l.textContent}`);
             speakOpt.onclick = e => {
                 e.stopPropagation();
-                speak(text, 'en-US');
+                speak(text, speechLang(text));
             };
             row.appendChild(speakOpt);
         }
