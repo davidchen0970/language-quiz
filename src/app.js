@@ -38,8 +38,12 @@ function speechLang(text) {
 function speak(text, lang) {
     if (!SPEECH || !text) return;
     window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = lang || speechLang(text);
+    const finalLang = lang || speechLang(text);
+    const langCode = (finalLang || 'en').slice(0, 2).toLowerCase();
+    const blankWord = { en: 'blank', ko: '빈칸', zh: '空格', ja: '空欄' }[langCode] || 'blank';
+    const spokenText = text.replace(/_+/g, blankWord);
+    const u = new SpeechSynthesisUtterance(spokenText);
+    u.lang = finalLang;
     u.rate = 0.95;
 
     function preferVoice() {
