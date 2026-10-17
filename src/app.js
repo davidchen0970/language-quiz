@@ -28,36 +28,85 @@ const SPEECH =
     'speechSynthesis' in window &&
     'SpeechSynthesisUtterance' in window;
 
+const qLang = q => (q && (q.lang || q.language || q.voiceLang)) || '';
+
 function speechLang(text) {
+    if (!text) return 'en-US';
     if (/[\u3040-\u30ff]/.test(text)) return 'ja-JP';
     if (/[\uac00-\ud7af]/.test(text)) return 'ko-KR';
-    if (/[\u3400-\u4dbf\u4e00-\u9fff]/.test(text)) return 'zh-TW';
+
+    const cjk = (text.match(/[\u3400-\u4dbf\u4e00-\u9fff]/g) || []).length;
+    const latin = (text.match(/[A-Za-z]/g) || []).length;
+    if (cjk > 0 && cjk >= latin) return 'zh-TW';
     return 'en-US';
 }
 
-function speak(text, lang) {
+let voicesPromise = null;
+function loadVoices() {
+    if (voicesPromise) return voicesPromise;
+    voicesPromise = new Promise(resolve => {
+        const synth = window.speechSynthesis;
+        if (!synth) return resolve([]);
+
+        const ready = synth.getVoices();
+        if (ready.length) return resolve(ready);
+
+        let done = false;
+        const finish = () => {
+            if (done) return;
+            done = true;
+            synth.removeEventListener('voiceschanged', onChanged);
+            resolve(synth.getVoices());
+        };
+        const onChanged = () => {
+            if (synth.getVoices().length) finish();
+        };
+        synth.addEventListener('voiceschanged', onChanged);
+        setTimeout(finish, 2000);
+    });
+    return voicesPromise;
+}
+
+function pickVoice(voices, lang) {
+    if (!voices || !voices.length) return null;
+    const want = lang.toLowerCase().replace('_', '-');
+    const want2 = want.slice(0, 2);
+
+    return voices.find(v => (v.lang || '').toLowerCase().replace('_', '-') === want)
+        || voices.find(v => (v.lang || '').toLowerCase().replace('_', '-').startsWith(want2))
+        || null;
+}
+
+let speakToken = 0;
+
+async function speak(text, lang) {
     if (!SPEECH || !text) return;
-    window.speechSynthesis.cancel();
+
+    const synth = window.speechSynthesis;
+    const myToken = ++speakToken;
+
+    synth.cancel();
+
     const finalLang = lang || speechLang(text);
-    const langCode = (finalLang || 'en').slice(0, 2).toLowerCase();
-    const blankWord = { en: 'blank', ko: '빈칸', zh: '空格', ja: '空欄' }[langCode] || 'blank';
+    const code = (finalLang || 'en').slice(0, 2).toLowerCase();
+    const blankWord = { en: 'blank', ko: '빈칸', zh: '空格', ja: '空欄' }[code] || 'blank';
     const spokenText = text.replace(/_+/g, blankWord);
+
+    const voices = await loadVoices();
+
+    if (myToken !== speakToken) return;
+
     const u = new SpeechSynthesisUtterance(spokenText);
     u.lang = finalLang;
     u.rate = 0.95;
 
-    function preferVoice() {
-        try {
-            const voices = window.speechSynthesis.getVoices();
-            const want = (u.lang || 'en').slice(0, 2).toLowerCase();
-            const match = voices.find(v => (v.lang || '').slice(0, 2).toLowerCase() === want)
-                || voices.find(v => (v.lang || '').toLowerCase().startsWith(u.lang.toLowerCase()));
-            if (match) u.voice = match;
-        } catch {}
-    }
-    preferVoice();
-    window.speechSynthesis.onvoiceschanged = () => preferVoice();
-    window.speechSynthesis.speak(u);
+    const v = pickVoice(voices, finalLang);
+    if (v) u.voice = v;
+
+    await new Promise(r => setTimeout(r, 60));
+    if (myToken !== speakToken) return;
+
+    synth.speak(u);
 }
 
 
@@ -192,7 +241,7 @@ function renderPassage(q) {
         readBtn.type = 'button';
         readBtn.className = 'speak-passage';
         readBtn.textContent = '🔊 朗讀全文';
-        readBtn.onclick = () => speak(text, speechLang(text));
+        readBtn.onclick = () => speak(text, qLang(q) || speechLang(text));
         panel.appendChild(readBtn);
     }
 
@@ -227,7 +276,10 @@ function render() {
     $('question').textContent = questionText(q);
     if (SPEECH) {
         const qSpeak = $('speak-question');
-        if (qSpeak) qSpeak.onclick = () => speak(questionText(q), speechLang(questionText(q)));
+        if (qSpeak) {
+            qSpeak.onclick = () =>
+                speak(questionText(q), qLang(q) || speechLang(questionText(q)));
+        }
     }
     $('counter').textContent = `Question ${index + 1} / ${quiz.length}`;
     $('bar').style.width = `${((index + 1) / quiz.length) * 100}%`;
@@ -274,7 +326,7 @@ function render() {
             speakOpt.setAttribute('aria-label', `朗讀選項 ${l.textContent}`);
             speakOpt.onclick = e => {
                 e.stopPropagation();
-                speak(text, speechLang(text));
+                speak(text, qLang(q) || speechLang(text));
             };
             row.appendChild(speakOpt);
         }
@@ -382,6 +434,9 @@ function populateChapterSelect() {
 async function init() {
     chapterFiles = await window.quizLoader.init();
     populateChapterSelect();
+
+    // 提早把語音清單熱起來，第一次按朗讀就不用等
+    if (SPEECH) loadVoices();
 
     $('chapter').onchange = makeQuiz;
     $('category').onchange = makeQuiz;
