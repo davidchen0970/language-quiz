@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>測驗網站</title>
+
+  <style>
+    :root {
+      --bg: #f5f5fa;
+      --card: #ffffff;
+      --text: #000000;
+      --muted: #707070;
+      --border: #dadada;
+      --blue: #34495e;
+      --blue-soft: rgba(52, 73, 94, .10);
+      --purple: #6b69d6;
+      --purple-soft: rgba(107, 105, 214, .12);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    main {
+      width: 100%;
+      max-width: 520px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 38px 32px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.06);
+    }
+    .header { text-align: center; margin-bottom: 30px; }
+    .icon-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 56px;
+      height: 56px;
+      background: var(--blue-soft);
+      border: 1px solid #d5dde5;
+      border-radius: 14px;
+      font-size: 27px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 12px rgba(52,73,94,.10);
+    }
+    h1 { font-size: 26px; font-weight: 800; letter-spacing: -.04em; margin-bottom: 7px; }
+    p.subtitle { color: var(--muted); font-size: 15px; }
+    .links { display: flex; flex-direction: column; gap: 14px; }
+    .link-button {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 19px 20px;
+      color: var(--text);
+      text-decoration: none;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: #fff;
+      box-shadow: 0 4px 12px rgba(0,0,0,.04);
+      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease, background .2s ease;
+    }
+    .link-button:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(0,0,0,.08); }
+    .english:hover { border-color: #bdc3c7; background: #f7f8fa; }
+    .korean:hover { border-color: #c9c8ee; background: #f8f8fc; }
+    .button-content { display: flex; flex-direction: column; gap: 3px; }
+    .button-title { font-size: 17px; font-weight: 750; letter-spacing: -.02em; }
+    .button-description { color: var(--muted); font-size: 14px; font-weight: 400; }
+    .arrow-icon {
+      display: grid;
+      place-items: center;
+      flex: 0 0 34px;
+      height: 34px;
+      margin-left: 14px;
+      border-radius: 10px;
+      color: var(--blue);
+      background: var(--blue-soft);
+      font-size: 18px;
+      transition: transform .2s ease;
+    }
+    .korean .arrow-icon { color: var(--purple); background: var(--purple-soft); }
+    .link-button:hover .arrow-icon { transform: translateX(3px); }
+    .link-button:focus-visible { outline: 3px solid rgba(52,73,94,.28); outline-offset: 3px; }
+    @media (max-width: 560px) { main { padding: 30px 20px; } .link-button { padding: 17px 16px; } }
+    @media (prefers-color-scheme: dark) {
+      :root { --bg: #303030; --card: #424242; --text: rgba(255,255,255,.9); --muted: rgba(255,255,255,.7); --border: rgba(255,255,255,.12); --blue: #ecf0f1; --blue-soft: rgba(236,240,241,.12); --purple: #bdc3c7; --purple-soft: rgba(189,195,199,.14); }
+      .link-button { background: #424242; }
+      .english:hover { background: #4b4b4b; border-color: #717171; }
+      .korean:hover { background: #4b4b4b; border-color: #717171; }
+      .icon-badge { border-color: rgba(255,255,255,.16); }
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <div class="header">
+      <div class="icon-badge">📝</div>
+      <h1>語言能力測驗中心</h1>
+      <p class="subtitle">請選擇您要進行的語言檢定題庫</p>
+    </div>
+
+    <div class="links">
+      <a href="./english_toeic/" class="link-button english">
+        <div class="button-content">
+          <span class="button-title">🇺🇸 英文 TOEIC 題庫</span>
+          <span class="button-description">前往多益聽力與閱讀模擬檢定</span>
+        </div>
+        <span class="arrow-icon">→</span>
+      </a>
+
+      <a href="./korean_topik/" class="link-button korean">
+        <div class="button-content">
+          <span class="button-title">🇰🇷 韓文 TOPIK 測驗</span>
+          <span class="button-description">前往韓國語能力考試模擬檢定</span>
+        </div>
+        <span class="arrow-icon">→</span>
+      </a>
+    </div>
+  </main>
+</body>
+</html>
