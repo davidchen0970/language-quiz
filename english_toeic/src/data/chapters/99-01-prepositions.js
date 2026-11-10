@@ -1,0 +1,122 @@
+// 99-1 英文介系詞
+questions.push(
+    // 1-10
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "The critical meeting is scheduled to start _____ 9:00 AM sharp tomorrow morning.", options: ["at", "on", "in", "by"], answer: 0, tag: "時間介系詞", exp: "「at」用於具體的時間點（例如：at 9:00 AM, at noon）。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "Our company usually organizes an annual team building event _____ October.", options: ["on", "at", "in", "for"], answer: 2, tag: "時間介系詞", exp: "「in」用於月份、季節、年份或較長的時間範圍。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "She has promised to deliver the complete project report _____ Friday.", options: ["in", "at", "on", "by"], answer: 3, tag: "時間介系詞", exp: "「by」表示「在……之前」或「最遲在……時間點」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "We always celebrate family reunions _____ Christmas Day.", options: ["at", "on", "in", "with"], answer: 1, tag: "時間介系詞", exp: "「on」用於具體的日期或特定的日子（on Christmas Day）。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "They have been working continuously on this software project _____ last summer.", options: ["for", "since", "during", "until"], answer: 1, tag: "時間介系詞", exp: "「since」後面接「過去的起算時間點」，搭配現在完成式。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "Many animals store food during the autumn so they can survive _____ winter.", options: ["on", "at", "in", "to"], answer: 2, tag: "時間介系詞", exp: "季節前面固定使用介系詞「in」（例如：in winter）。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "I stayed up reading a captivating book _____ midnight.", options: ["until", "at", "for", "since"], answer: 0, tag: "時間介系詞", exp: "「until」表示動作持續進行「直到……時刻為止」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "He managed to complete the entire marathon _____ less than three hours.", options: ["on", "at", "in", "with"], answer: 2, tag: "時間介系詞", exp: "「in + 時間長度」可表示「在多久時間範圍之內」完成某事。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "She usually goes for a refreshing morning jog _____ sunrise.", options: ["in", "at", "on", "for"], answer: 1, tag: "時間介系詞", exp: "「at sunrise / at sunset」為固定用法，指日出/日落時刻。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "The office will remain closed _____ national holidays.", options: ["on", "at", "during", "in"], answer: 2, tag: "時間介系詞", exp: "「during」表示「在……期間」，後面接名詞或名詞片語。" },
+
+    // 11-20
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "There was a small green bird sitting _____ the roof of the old garage.", options: ["at", "on", "in", "above"], answer: 1, tag: "地點介系詞", exp: "「on」表示在某物體的「表面之上」且有接觸。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "We spent the entire afternoon waiting for our flight _____ the airport.", options: ["at", "on", "to", "inside"], answer: 0, tag: "地點介系詞", exp: "「at」用於表達具體的地點、場所或站點（如：at the airport）。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "She kept all her important personal documents locked _____ a heavy wooden box.", options: ["on", "at", "inside", "over"], answer: 2, tag: "地點介系詞", exp: "「inside / in」表示在三維空間或封閉容器的「內部/裡面」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "The airplane flew gracefully _____ the dense thick clouds.", options: ["under", "above", "at", "on"], answer: 1, tag: "地點介系詞", exp: "「above」表示位置高於某物（不一定正上方，且無直接接觸）。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "He put his hands _____ his pockets to keep them warm against the icy wind.", options: ["into", "onto", "on", "toward"], answer: 0, tag: "動態介系詞", exp: "「into」表示由外向內的「動態進入」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "The cat gently jumped _____ the kitchen counter to steal a snippet of fish.", options: ["into", "onto", "at", "in"], answer: 1, tag: "動態介系詞", exp: "「onto」表示動態地移動到某個平面的表面之上。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "The hikers walked _____ the winding path along the clear mountain river.", options: ["across", "along", "through", "over"], answer: 1, tag: "方向介系詞", exp: "「along」表示「沿著」長條狀的物體（如小徑、河流、街道）。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "The train sped smoothly _____ the dark mountain tunnel.", options: ["across", "along", "through", "over"], answer: 2, tag: "方向介系詞", exp: "「through」表示穿過立體空間的「內部」（如隧道、森林）。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "They built a beautiful wooden bridge _____ the narrow stream.", options: ["across", "along", "through", "into"], answer: 0, tag: "方向介系詞", exp: "「across」表示「橫跨」或從一端到另一端。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "The temperature dropped drastically _____ zero degrees Celsius last night.", options: ["under", "below", "behind", "beneath"], answer: 1, tag: "位置介系詞", exp: "測量溫度、高度、標準時，低於某基準數值習慣用「below」。" },
+
+    // 21-30
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "She has always been exceptionally good _____ learning foreign languages rapidly.", options: ["at", "in", "with", "for"], answer: 0, tag: "形容詞搭配", exp: "「be good at」為固定搭配，表示「擅長於某技能」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "Are you genuinely interested _____ applying for this international scholarship?", options: ["about", "for", "in", "on"], answer: 2, tag: "形容詞搭配", exp: "「be interested in」表示「對……感興趣」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "The young toddler is terrified _____ dark rooms without a nightlight.", options: ["with", "of", "by", "at"], answer: 1, tag: "形容詞搭配", exp: "「be terrified of / be afraid of」表示「害怕……」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "The parents are extremely proud _____ their daughter's academic achievements.", options: ["for", "with", "of", "about"], answer: 2, tag: "形容詞搭配", exp: "「be proud of」表示「以……為榮/驕傲」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "He is completely responsible _____ coordinating the entire software development team.", options: ["for", "to", "with", "about"], answer: 0, tag: "形容詞搭配", exp: "「be responsible for」表示「對……負責」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "My sister is allergic _____ seafood, especially shrimp and fresh oysters.", options: ["with", "to", "against", "for"], answer: 1, tag: "形容詞搭配", exp: "「be allergic to」表示「對……過敏」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "His architectural style is quite similar _____ the one we saw in Europe.", options: ["with", "as", "to", "like"], answer: 2, tag: "形容詞搭配", exp: "「be similar to」表示「與……相似」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "This country's cuisine is very different _____ what I am used to eating at home.", options: ["from", "with", "than", "to"], answer: 0, tag: "形容詞搭配", exp: "「be different from」表示「與……不同」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "They have become very accustomed _____ getting up at five o'clock every morning.", options: ["with", "to", "for", "in"], answer: 1, tag: "形容詞搭配", exp: "「be accustomed to + V-ing/N」表示「習慣於……」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "She was completely unaware _____ the upcoming surprise party planned by her friends.", options: ["about", "of", "with", "for"], answer: 1, tag: "形容詞搭配", exp: "「be unaware of」表示「未察覺到/不知道……」。" },
+
+    // 31-40
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "The success of our outdoor event strictly depends _____ the weather conditions.", options: ["on", "in", "from", "at"], answer: 0, tag: "動詞搭配", exp: "「depend on」為固定搭配，表示「取決於…… / 依賴……」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "I am really looking forward _____ visiting my grandparents this coming weekend.", options: ["to", "for", "at", "with"], answer: 0, tag: "動詞搭配", exp: "「look forward to + V-ing/N」表示「期待……」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "He insisted _____ paying for the entire dinner bill despite our objections.", options: ["in", "on", "at", "with"], answer: 1, tag: "動詞搭配", exp: "「insist on + V-ing/N」表示「堅持要……」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "She sincerely apologized _____ her manager for making that silly typing error.", options: ["for", "to", "at", "with"], answer: 1, tag: "動詞搭配", exp: "「apologize to 人 for 事」表示「因某事向某人道歉」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "The doctor advised him to refrain _____ drinking sugary beverages every day.", options: ["from", "out", "off", "with"], answer: 0, tag: "動詞搭配", exp: "「refrain from」表示「克制/避免做某事」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "Do you believe _____ the existence of extraterrestrial life in the universe?", options: ["on", "at", "in", "with"], answer: 2, tag: "動詞搭配", exp: "「believe in」表示「相信……的存在 / 信仰……」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "This luxurious vintage watch belongs _____ my late grandfather.", options: ["to", "with", "for", "on"], answer: 0, tag: "動詞搭配", exp: "「belong to」表示「屬於……」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "The police are currently searching _____ missing valuable clues at the crime scene.", options: ["after", "for", "at", "about"], answer: 1, tag: "動詞搭配", exp: "「search for」表示「尋找/搜括……」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "She suffers _____ chronic migraines whenever she works long hours under stress.", options: ["with", "by", "from", "at"], answer: 2, tag: "動詞搭配", exp: "「suffer from」表示「受……之苦 / 患有（疾病）」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "He congratulates his best friend _____ winning the prestigious national photography award.", options: ["for", "on", "with", "at"], answer: 1, tag: "動詞搭配", exp: "「congratulate 人 on 事」表示「因某事向某人祝賀」。" },
+
+    // 41-50
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "Scientists are trying to find an effective solution _____ the global climate crisis.", options: ["of", "for", "to", "with"], answer: 2, tag: "名詞搭配", exp: "「solution to」為固定搭配，表示「……的解決方案」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "There has been a dramatic increase _____ electric vehicle sales over recent years.", options: ["on", "in", "of", "at"], answer: 1, tag: "名詞搭配", exp: "「increase in + 領域」表示在某方面有所「增長」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "What was the primary reason _____ his sudden resignation from the tech company?", options: ["of", "for", "to", "about"], answer: 1, tag: "名詞搭配", exp: "「reason for」表示「……的原因/理由」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "Smoking tobacco can cause severe and irreversible damage _____ your lung health.", options: ["to", "of", "on", "for"], answer: 0, tag: "名詞搭配", exp: "「damage / harm to」表示對某物造成的「損害」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "She has a very positive and proactive attitude _____ overcoming life difficulties.", options: ["for", "with", "towards", "on"], answer: 2, tag: "名詞搭配", exp: "「attitude towards / to」表示「對待某事物的態度」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "There is a solid working relationship _____ the sales and marketing departments.", options: ["among", "between", "with", "inside"], answer: 1, tag: "名詞搭配", exp: "兩者之間用「between」；三者以上用「among」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "What is the main difference _____ these two advanced camera lenses?", options: ["among", "with", "between", "from"], answer: 2, tag: "名詞搭配", exp: "比較兩者的差異用「difference between A and B」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "He took advantage _____ the quiet morning hours to finish writing his novel.", options: ["for", "of", "with", "on"], answer: 1, tag: "片語搭配", exp: "「take advantage of」為固定片語，表示「利用」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "The train arrived exactly _____ time, allowing us to make our connecting flight.", options: ["in", "on", "at", "by"], answer: 1, tag: "固定片語", exp: "「on time」表示「準時」；「in time」表示「及時」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "We reached the hospital just _____ time to say goodbye to our beloved grandmother.", options: ["on", "in", "by", "at"], answer: 1, tag: "固定片語", exp: "「in time」表示「及時/趕得上」。" },
+
+    // 51-60
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "He took my blue jacket _____ mistake, thinking it belonged to his brother.", options: ["by", "with", "in", "from"], answer: 0, tag: "固定片語", exp: "「by mistake」表示「無意中/弄錯地」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "Despite the chaotic weather conditions, the situation is completely _____ control.", options: ["in", "under", "with", "below"], answer: 1, tag: "固定片語", exp: "「under control」表示「在控制之中」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "The vending machine on the second floor has been _____ of order since yesterday.", options: ["out", "off", "away", "in"], answer: 0, tag: "固定片語", exp: "「out of order」表示機器「故障/壞掉」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "_____ general, Asian cuisines tend to utilize a wider variety of fresh spices.", options: ["At", "In", "On", "By"], answer: 1, tag: "固定片語", exp: "「In general」表示「總體而言 / 大體上」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "He prefers traveling everywhere _____ foot rather than taking crowded public buses.", options: ["by", "with", "on", "in"], answer: 2, tag: "交通與方式", exp: "步行固定用「on foot」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "Did you pay for the brand new refrigerator in cash or _____ credit card?", options: ["with", "by", "on", "through"], answer: 1, tag: "交通與方式", exp: "「by credit card」表示「刷信用卡」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "_____ my opinion, reading books regularly expands your knowledge base significantly.", options: ["From", "In", "According to", "To"], answer: 1, tag: "固定片語", exp: "表達個人觀點固定用「In my opinion」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "She managed to complete the difficult puzzle all _____ herself without any assistance.", options: ["by", "with", "on", "for"], answer: 0, tag: "固定片語", exp: "「by oneself」表示「靠自己 / 獨自」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "_____ addition to taking daily medicines, you should get plenty of bed rest.", options: ["In", "With", "On", "By"], answer: 0, tag: "連接介系詞", exp: "「In addition to」表示「除了……之外（還有）」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "_____ spite of the heavy downpour, the outdoor music festival proceeded as planned.", options: ["In", "For", "With", "By"], answer: 0, tag: "連接介系詞", exp: "「In spite of」等於「Despite」，表示「儘管」。" },
+
+    // 61-70
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "The flight was severely delayed _____ to an unexpected technical malfunction.", options: ["because", "due", "owing", "thanks"], answer: 1, tag: "原因介系詞", exp: "「due to」表示「由於 / 因為」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "He was falsely accused _____ stealing money from the office safe.", options: ["with", "for", "of", "about"], answer: 2, tag: "動詞搭配", exp: "「accuse 人 of 事」表示「指控某人犯了某罪」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "The teacher reminded the students _____ the upcoming deadline for the final project.", options: ["about", "of", "with", "for"], answer: 1, tag: "動詞搭配", exp: "「remind 人 of/about 事」表示「提醒某人某事」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "Scientists warn us _____ the severe long-term dangers of ocean pollution.", options: ["against", "of", "about", "above"], answer: 2, tag: "動詞搭配", exp: "「warn 人 about/against 事」表示「警告某人注意危險」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "They are charging the customer $50 _____ express shipping and handling fees.", options: ["for", "with", "on", "at"], answer: 0, tag: "動詞搭配", exp: "「charge 金額 for 項目」表示「收取某項費用」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "Special sunscreen helps protect your skin _____ harmful ultraviolet rays.", options: ["from", "against", "with", "off"], answer: 0, tag: "動詞搭配", exp: "「protect ... from ...」表示「保護……免於……傷害」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "Can we substitute honey _____ refined white sugar in this cake recipe?", options: ["with", "for", "to", "into"], answer: 1, tag: "動詞搭配", exp: "「substitute A for B」表示「用 A 替代 B」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "_____ behalf of the entire company, I would like to welcome our new partners.", options: ["On", "In", "At", "By"], answer: 0, tag: "固定片語", exp: "「On behalf of」表示「代表……」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "Are you in favor _____ changing the current company work-from-home policy?", options: ["for", "with", "of", "to"], answer: 2, tag: "固定片語", exp: "「in favor of」表示「贊成 / 支持……」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "_____ regard to your recent inquiry, we are pleased to offer you a full refund.", options: ["With", "In", "On", "For"], answer: 0, tag: "進階片語", exp: "「With regard to」表示「關於 / 至於……」。" },
+
+    // 71-80
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "He divided the large birthday cake _____ eight equal slices for the children.", options: ["into", "to", "in", "among"], answer: 0, tag: "動詞搭配", exp: "「divide ... into ...」表示「把……分割成……」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "The famous novel has been translated _____ more than thirty different languages.", options: ["to", "into", "in", "towards"], answer: 1, tag: "動詞搭配", exp: "「translate ... into ...」表示「翻譯成另一種語言」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "Could I borrow a spare pen _____ you for a couple of minutes?", options: ["to", "from", "with", "by"], answer: 1, tag: "動詞搭配", exp: "「borrow 某物 from 人」表示「向某人借入某物」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "She kindly offered to lend her expensive camera _____ her classmate for the weekend.", options: ["from", "for", "to", "with"], answer: 2, tag: "動詞搭配", exp: "「lend 某物 to 人」表示「借出某物給某人」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "I am completely unfamiliar _____ this new computer operating system.", options: ["to", "with", "at", "about"], answer: 1, tag: "形容詞搭配", exp: "「be unfamiliar with」表示「對……不熟悉」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "This quiet coastal village is famous _____ its delicious fresh seafood restaurants.", options: ["for", "about", "with", "by"], answer: 0, tag: "形容詞搭配", exp: "「be famous for」表示「以……而聞名」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "The wild dog species is now _____ threat of complete extinction.", options: ["in", "under", "below", "with"], answer: 1, tag: "固定片語", exp: "「under threat of ...」表示「處於……威脅之下」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "He made an error in the calculation, but he did it completely _____ chance.", options: ["by", "with", "on", "in"], answer: 0, tag: "固定片語", exp: "「by chance」表示「偶然地 / 巧合地」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "She was completely absorbed _____ reading her fascinating mystery novel.", options: ["with", "in", "on", "at"], answer: 1, tag: "形容詞搭配", exp: "「be absorbed in」表示「沉浸於 / 全神貫注於……」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "The new manager is very popular _____ all the factory workers.", options: ["to", "with", "for", "amongst"], answer: 1, tag: "形容詞搭配", exp: "「be popular with / among」表示「深受……喜愛」。" },
+
+    // 81-90
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "They were disappointed _____ the poor service quality at the five-star hotel.", options: ["with", "for", "about", "of"], answer: 0, tag: "形容詞搭配", exp: "「be disappointed with/about」表示「對……感到失望」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "His theory is based _____ years of rigorous field research in Africa.", options: ["in", "on", "at", "with"], answer: 1, tag: "動詞搭配", exp: "「be based on」表示「基於 / 建立在……基礎上」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "I mistook that total stranger _____ my old college roommate at the subway station.", options: ["with", "as", "for", "to"], answer: 2, tag: "動詞搭配", exp: "「mistake A for B」表示「誤將 A 當作 B」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "The criminal was sentenced _____ ten years of imprisonment for robbery.", options: ["with", "for", "to", "in"], answer: 2, tag: "動詞搭配", exp: "「be sentenced to + 刑期」表示「被判處……刑罰」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "They are aiming _____ reducing carbon emissions by fifty percent before 2030.", options: ["at", "for", "to", "on"], answer: 0, tag: "動詞搭配", exp: "「aim at + V-ing/N」表示「旨在 / 目標在於……」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "He apologized to his neighbor _____ making too much noise late at night.", options: ["for", "about", "with", "on"], answer: 0, tag: "動詞搭配", exp: "「apologize to 人 for 事」表示「因某事向某人道歉」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "She excels _____ solving complex logical mathematical puzzles.", options: ["at", "in", "with", "on"], answer: 1, tag: "動詞搭配", exp: "「excel in / at」表示「在……領域表現卓越」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "The room was packed _____ enthusiastic fans waiting to see the pop star.", options: ["by", "with", "in", "of"], answer: 1, tag: "形容詞搭配", exp: "「be packed with」表示「擠滿了……」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "_____ first, I didn't like the spicy dish, but now I love it.", options: ["At", "In", "On", "By"], answer: 0, tag: "固定片語", exp: "「At first」表示「起初 / 一開始」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "_____ last, the lost travelers finally found their way back to the village.", options: ["At", "In", "By", "On"], answer: 0, tag: "固定片語", exp: "「At last」表示「終於 / 總算」。" },
+
+    // 91-100
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "The museum exhibition is open daily _____ 9 AM to 5 PM.", options: ["between", "from", "since", "at"], answer: 1, tag: "時間/範圍", exp: "「from ... to ...」表示「從……到……」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "She is capable _____ handling stressful emergency situations calmly.", options: ["to", "of", "with", "for"], answer: 1, tag: "形容詞搭配", exp: "「be capable of + V-ing/N」表示「有能力做……」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "The project was carried out _____ accordance with national safety guidelines.", options: ["in", "with", "by", "on"], answer: 0, tag: "進階片語", exp: "「in accordance with」表示「依照 / 根據（法規）」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "He bought the painting _____ auction for a record-breaking price.", options: ["in", "at", "on", "by"], answer: 1, tag: "固定片語", exp: "在拍賣會上記得用「at auction」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "She is currently _____ duty at the emergency room hospital ward.", options: ["in", "on", "at", "under"], answer: 1, tag: "固定片語", exp: "「on duty」表示「值班中 / 當值」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "We must protect endangered species _____ being hunted illegally.", options: ["from", "against", "with", "away"], answer: 0, tag: "動詞搭配", exp: "「protect ... from + V-ing」表示「保護防止……發生」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "The house caught fire and was burnt _____ ash in just a few hours.", options: ["into", "to", "in", "down"], answer: 1, tag: "固定片語", exp: "「burn to ash」表示「化為灰燼」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "I bumped into an old high school friend completely _____ accident today.", options: ["by", "with", "on", "in"], answer: 0, tag: "固定片語", exp: "「by accident」表示「意外地 / 偶然地」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "You must concentrate completely _____ driving when you are on the busy highway.", options: ["in", "at", "on", "to"], answer: 2, tag: "動詞搭配", exp: "「concentrate on」表示「專注於……」。" },
+    { chapter: "99-1", chapterName: "英文介系詞", sentence: "Congratulations! You have reached the end _____ this 100-question quiz!", options: ["to", "of", "at", "in"], answer: 1, tag: "固定名詞", exp: "「the end of ...」表示「……的結尾/終點」。" }
+);

@@ -1,0 +1,4 @@
+# test/local-deploy.sh 的預設輸出（模擬 Actions 建置結果）
+/test/publish/
+/test/preview*/
+/test/output/
