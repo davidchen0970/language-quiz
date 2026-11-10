@@ -35,31 +35,52 @@ function speechLang(text) {
     return 'en-US';
 }
 
+function getPreferredVoice(lang) {
+    const voices = window.speechSynthesis.getVoices();
+    const target = (lang || 'en-US').toLowerCase();
+    const language = target.split('-')[0];
+
+    return (
+        voices.find(v => (v.lang || '').toLowerCase() === target) ||
+        voices.find(v =>
+            (v.lang || '').toLowerCase().startsWith(`${language}-`)
+        ) ||
+        null
+    );
+}
+
 function speak(text, lang) {
     if (!SPEECH || !text) return;
     window.speechSynthesis.cancel();
     const finalLang = lang || speechLang(text);
-    const langCode = (finalLang || 'en').slice(0, 2).toLowerCase();
-    const blankWord = { en: 'blank', ko: '빈칸', zh: '空格', ja: '空欄' }[langCode] || 'blank';
-    const spokenText = text.replace(/_+/g, blankWord);
-    const u = new SpeechSynthesisUtterance(spokenText);
-    u.lang = finalLang;
-    u.rate = 0.95;
+    const langCode = finalLang.slice(0, 2).toLowerCase();
+    const blankWord = {
+        en: 'blank',
+        ko: '빈칸',
+        zh: '空格',
+        ja: '空欄'
+    }[langCode] || 'blank';
+    const spokenText = text.replace(/_+/g, ` ${blankWord} `);
 
-    function preferVoice() {
-        try {
-            const voices = window.speechSynthesis.getVoices();
-            const want = (u.lang || 'en').slice(0, 2).toLowerCase();
-            const match = voices.find(v => (v.lang || '').slice(0, 2).toLowerCase() === want)
-                || voices.find(v => (v.lang || '').toLowerCase().startsWith(u.lang.toLowerCase()));
-            if (match) u.voice = match;
-        } catch {}
+    const play = () => {
+        const u = new SpeechSynthesisUtterance(spokenText);
+        u.lang = finalLang;
+        u.rate = 0.95;
+        u.voice = getPreferredVoice(finalLang);
+        window.speechSynthesis.speak(u);
+    };
+
+    if (window.speechSynthesis.getVoices().length) {
+        play();
+    } else {
+        window.speechSynthesis.addEventListener(
+            'voiceschanged',
+            play,
+            { once: true }
+        );
     }
-    preferVoice();
-    window.speechSynthesis.onvoiceschanged = () => preferVoice();
-    window.speechSynthesis.speak(u);
-}
 
+}
 
 function selectedChapter() {
     return $('chapter').value;
